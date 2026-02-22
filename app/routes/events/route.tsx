@@ -1,45 +1,35 @@
-import {
-	Await,
-	useLoaderData,
-	useRouteError,
-	isRouteErrorResponse,
-	data,
-} from 'react-router';
-import {Suspense} from 'react';
-import type {LoaderFunction} from 'react-router';
+import {useRouteError, isRouteErrorResponse} from 'react-router';
+import {useState, useEffect} from 'react';
 import {getEvents} from '~/lib/repository';
-
 import EventAnnouncementCard from './components/event_announcement';
 import {motion} from 'framer-motion';
-import * as process from 'node:process';
 import SkeletonContainer from '~/routes/events/components/event_announcement_skeleton';
 import type {EventProps} from '~/types';
 
-// const delay = (ms: number) =>
-//   new Promise((resolve) => setTimeout(resolve, ms));
-
-export const loader: LoaderFunction = async () => {
-	const baseUrl = process.env.POCKETBASE_URL;
-	const eventPromise = getEvents();
-
-	// await delay(5000);
-
-	return data({
-		events: eventPromise,
-		baseUrl: baseUrl,
-	});
-};
-
 export default function Event() {
-	const {events, baseUrl} = useLoaderData<typeof loader>();
+	const [events, setEvents] = useState<EventProps[]>([]);
+	const [loading, setLoading] = useState(true);
+	const baseUrl = import.meta.env.VITE_POCKETBASE_URL || process.env.POCKETBASE_URL;
+
+	useEffect(() => {
+		getEvents()
+			.then(data => {
+				setEvents(data);
+				setLoading(false);
+			})
+			.catch(error => {
+				console.error('Error loading events:', error);
+				setLoading(false);
+			});
+	}, []);
 
 	const containerVariants = {
 		hidden: {opacity: 0},
 		visible: {
 			opacity: 1,
 			transition: {
-				staggerChildren: 0.5, // Delay between each card
-				delayChildren: 0.1, // Initial delay before first card
+				staggerChildren: 0.5,
+				delayChildren: 0.1,
 			},
 		},
 	};
@@ -60,66 +50,49 @@ export default function Event() {
 						</div>
 					</div>
 					<div className="flex flex-col my-2">
-						<Suspense
-							fallback={
-								<div>
-									<div className=" max-w-4xl mx-auto p-4">
-										<SkeletonContainer/>
-									</div>
-								</div>
-							}
-						>
-							<Await
-								resolve={ events }
-								errorElement={ <div><SkeletonContainer/></div> }
-							>
-								{ (resolvedEvents: EventProps[]) =>
-									resolvedEvents.length ? (
-										<div>
-											<div className=" max-w-4xl mx-auto p-4">
-												{ resolvedEvents.map((event) => (
-													<motion.div
-														className="container"
-														variants={ containerVariants }
-														initial="hidden"
-														animate="visible"
-														key={ event.id }
-													>
-														<EventAnnouncementCard
-															name={ event.name }
-															id={ event.id }
-															collectionId={ event.collectionId }
-															topics={ event.topics }
-															isCancelled={ event.isCancelled }
-															startDate={ event.startDate }
-															endDate={ event.endDate }
-															isPostponed={ event.isPostponed }
-															newStartDate={ event.newStartDate }
-															newEndDate={ event.newEndDate }
-															description={ event.description }
-															location={ event.location }
-															organisers={ event.organisers }
-															animationsEnabled={ true }
-															backgroundImage={ event.cover }
-															baseUrl={ baseUrl }
-															address={ event.address }
-															// city={event.city}
-														/>
-													</motion.div>
-												)) }
-											</div>
-										</div>
-									) : (
-										<div className="text-center py-8">
-											<p className="text-lg mb-4">
-												We currently don&apos;t have upcoming events.
-											</p>
-											<div className="flex justify-center"></div>
-										</div>
-									)
-								}
-							</Await>
-						</Suspense>
+						{loading ? (
+							<div className=" max-w-4xl mx-auto p-4">
+								<SkeletonContainer/>
+							</div>
+						) : events.length ? (
+							<div className=" max-w-4xl mx-auto p-4">
+								{events.map((event) => (
+									<motion.div
+										className="container"
+										variants={containerVariants}
+										initial="hidden"
+										animate="visible"
+										key={event.id}
+									>
+										<EventAnnouncementCard
+											name={event.name}
+											id={event.id}
+											collectionId={event.collectionId}
+											topics={event.topics}
+											isCancelled={event.isCancelled}
+											startDate={event.startDate}
+											endDate={event.endDate}
+											isPostponed={event.isPostponed}
+											newStartDate={event.newStartDate}
+											newEndDate={event.newEndDate}
+											description={event.description}
+											location={event.location}
+											organisers={event.organisers}
+											animationsEnabled={true}
+											backgroundImage={event.cover}
+											baseUrl={baseUrl}
+											address={event.address}
+										/>
+									</motion.div>
+								))}
+							</div>
+						) : (
+							<div className="text-center py-8">
+								<p className="text-lg mb-4">
+									We currently don&apos;t have upcoming events.
+								</p>
+							</div>
+						)}
 					</div>
 				</div>
 			</section>
@@ -141,7 +114,7 @@ export function ErrorBoundary() {
 	return (
 		<div className="error-container">
 			<h1>Error</h1>
-			<p>Sorry, there was an error: { errorMessage }</p>
+			<p>Sorry, there was an error: {errorMessage}</p>
 		</div>
 	);
 }

@@ -1,49 +1,46 @@
-import {
-	Await,
-	useLoaderData,
-	useRouteError,
-	isRouteErrorResponse,
-	data,
-} from 'react-router';
-import {Suspense} from 'react';
-import type {LoaderFunction} from 'react-router';
+import {useRouteError, isRouteErrorResponse} from 'react-router';
+import {useState, useEffect} from 'react';
 import EnquireButton from '~/components/EnquireButton';
 import SponsorButton from '~/components/SponsorButton';
-import {
-	getFaq,
-	getInitiatives,
-	getSponsors,
-} from '~/lib/repository';
+import {getFaq, getInitiatives, getSponsors} from '~/lib/repository';
 import type {Sponsor, Initiative, FAQItem} from '~/types';
 import QuestionButton from '~/components/QuestionButton';
 import FAQ from '~/components/FAQ';
 import CTASection from '~/components/CTASection';
-import * as process from 'node:process';
-
-export const loader: LoaderFunction = async () => {
-	const baseUrl = process.env.POCKETBASE_URL;
-	const sponsorsPromise = getSponsors();
-	const initiativesPromise = getInitiatives();
-	const faqPromise = getFaq();
-
-	return data({
-		sponsors: sponsorsPromise,
-		initiatives: initiativesPromise,
-		faqs: faqPromise,
-		baseUrl: baseUrl,
-	});
-};
 
 export default function Home() {
-	const {sponsors, initiatives, faqs, baseUrl} =
-		useLoaderData<typeof loader>();
+	const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+	const [initiatives, setInitiatives] = useState<Initiative[]>([]);
+	const [faqs, setFaqs] = useState<FAQItem[]>([]);
+	const [loading, setLoading] = useState({
+		sponsors: true,
+		initiatives: true,
+		faqs: true,
+	});
+	const baseUrl = import.meta.env.VITE_POCKETBASE_URL || process.env.POCKETBASE_URL;
+
+	useEffect(() => {
+		Promise.all([
+			getSponsors().then(data => {
+				setSponsors(data);
+				setLoading(prev => ({...prev, sponsors: false}));
+			}),
+			getInitiatives().then(data => {
+				setInitiatives(data);
+				setLoading(prev => ({...prev, initiatives: false}));
+			}),
+			getFaq().then(data => {
+				setFaqs(data);
+				setLoading(prev => ({...prev, faqs: false}));
+			}),
+		]).catch(error => {
+			console.error('Error loading data:', error);
+		});
+	}, []);
 
 	return (
 		<div className="flex flex-col min-h-screen">
 			<section className="relative overflow-hidden px-6 lg:px-8 bg-sky h-screen flex items-center justify-center">
-				{ ' ' }
-				{/* Added flex and centering utilities */ }
-				{/* SVG Background */ }
 				<div className="absolute inset-0">
 					<svg
 						className="w-full h-full"
@@ -97,10 +94,7 @@ export default function Home() {
 						</defs>
 					</svg>
 				</div>
-				{/* Content */ }
 				<div className="relative z-10 mx-auto max-w-2xl">
-					{ ' ' }
-					{/* Removed padding classes */ }
 					<div className="text-center">
 						<h1 className="lg:leading-tighter text-8xl font-bold tracking-tighter sm:text-8xl md:text-[6rem] xl:text-[6.8rem] 2xl:text-[7.5rem] py-3 text-white">
 							We All Grow Together
@@ -139,56 +133,40 @@ export default function Home() {
 						</div>
 					</div>
 					<div className="container flex items-center justify-center p-4">
-						<Suspense fallback={ <div>Loading initiatives...</div> }>
-							<Await
-								resolve={ initiatives }
-								errorElement={ <div>Error loading initiatives!</div> }
-							>
-								{ (resolvedInitiatives: Initiative[]) => (
-									<div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-8">
-										{ resolvedInitiatives.map((item) => (
-											<div
-												key={ item.id }
-												className="overflow-hidden rounded-xl hover:shadow-xl max-w-sm justify-items-center gap-2 p-5"
-											>
-												{ item.img && (
-													<img
-														src={ item.img }
-														alt={ item.alt || item.title }
-														width={ 300 }
-														height={ 200 }
-														className="w-full h-48 object-contain"
-													/>
-												) }
-												<div className="px-6 py-12">
-													<h4 className="text-lg md:text-xl font-bold mb-2">
-														{ item.title }
-													</h4>
-													<p className="text-sm text-gray-500 dark:text-gray-400">
-														{ item.description }
-													</p>
-												</div>
-											</div>
-										)) }
+						{loading.initiatives ? (
+							<div>Loading initiatives...</div>
+						) : (
+							<div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-8">
+								{initiatives.map((item) => (
+									<div
+										key={item.id}
+										className="overflow-hidden rounded-xl hover:shadow-xl max-w-sm justify-items-center gap-2 p-5"
+									>
+										{item.img && (
+											<img
+												src={item.img}
+												alt={item.alt || item.title}
+												width={300}
+												height={200}
+												className="w-full h-48 object-contain"
+											/>
+										)}
+										<div className="px-6 py-12">
+											<h4 className="text-lg md:text-xl font-bold mb-2">
+												{item.title}
+											</h4>
+											<p className="text-sm text-gray-500 dark:text-gray-400">
+												{item.description}
+											</p>
+										</div>
 									</div>
-								) }
-							</Await>
-						</Suspense>
+								))}
+							</div>
+						)}
 					</div>
 				</div>
 			</section>
-			{/*<section>*/ }
-			{/*	<Suspense fallback={ <div>Loading CTA...</div> }>*/ }
-			{/*		<Await*/ }
-			{/*			resolve={ sponsors }*/ }
-			{/*			errorElement={ <div>Error loading Call to Action!</div> }*/ }
-			{/*		>*/ }
-			{/*			{ (resolvedSponsors: Sponsor[]) =>*/ }
-			{/*				resolvedSponsors.length ? <CTASection/> : <div></div>*/ }
-			{/*			}*/ }
-			{/*		</Await>*/ }
-			{/*	</Suspense>*/ }
-			{/*</section>*/ }
+
 			<CTASection/>
 
 			<section className="bg-gradient-to-r from-primary to-primary-foreground px-4 sm:px-6 lg:px-8 mb-24">
@@ -196,63 +174,52 @@ export default function Home() {
 					<h2 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] py-3 text-navy">
 						Sponsors
 					</h2>
-					<Suspense fallback={ <div>Loading sponsors...</div> }>
-						<Await
-							resolve={ sponsors }
-							errorElement={ <div>Error loading sponsors!</div> }
-						>
-							{ (resolvedSponsors: Sponsor[]) =>
-								resolvedSponsors.length ? (
-									<div>
-										<div
-											className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-8 items-start mb-5 my-5">
-											{ resolvedSponsors.map((sponsor) => (
-												<div key={ sponsor.id }>
-													<a
-														href={ sponsor.website }
-														target="_blank"
-														className="rounded-xl hover:shadow-xl gap-2 p-5 flex sm:flex-col justify-start items-start sm:justify-center sm:items-center sm:text-center h-auto sm:h-52 w-full"
-														rel="noreferrer"
-													>
-														{ sponsor.logo && (
-															<img
-																src={ `${ baseUrl }/api/files/${ sponsor.collectionId }/${ sponsor.id }/${ sponsor.logo }` }
-																alt={ sponsor.name || sponsor.website }
-																width={ 70 }
-																height={ 70 }
-																className="rounded-full bg-white object-contain flex-shrink-0"
-															/>
-														) }
-														<div className="px-2 py-2 overflow-hidden w-full">
-															<h4 className="text-lg md:text-xl font-bold mb-2 line-clamp-2 overflow-hidden">
-																{ sponsor.name }
-															</h4>
-															{/*<p className="text-xs font-light text-gray-500 dark:text-gray-400 line-clamp-1">*/ }
-															{/*	{ sponsor.website }*/ }
-															{/*</p>*/}
-														</div>
-													</a>
-												</div>
-											)) }
-										</div>
-										<SponsorButton/>
+					{loading.sponsors ? (
+						<div>Loading sponsors...</div>
+					) : sponsors.length ? (
+						<div>
+							<div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-8 items-start mb-5 my-5">
+								{sponsors.map((sponsor) => (
+									<div key={sponsor.id}>
+										<a
+											href={sponsor.website}
+											target="_blank"
+											className="rounded-xl hover:shadow-xl gap-2 p-5 flex sm:flex-col justify-start items-start sm:justify-center sm:items-center sm:text-center h-auto sm:h-52 w-full"
+											rel="noreferrer"
+										>
+											{sponsor.logo && (
+												<img
+													src={`${baseUrl}/api/files/${sponsor.collectionId}/${sponsor.id}/${sponsor.logo}`}
+													alt={sponsor.name || sponsor.website}
+													width={70}
+													height={70}
+													className="rounded-full bg-white object-contain flex-shrink-0"
+												/>
+											)}
+											<div className="px-2 py-2 overflow-hidden w-full">
+												<h4 className="text-lg md:text-xl font-bold mb-2 line-clamp-2 overflow-hidden">
+													{sponsor.name}
+												</h4>
+											</div>
+										</a>
 									</div>
-								) : (
-									<div className="text-center py-8">
-										<p className="text-lg mb-4">
-											We currently don&apos;t have any sponsors.
-										</p>
-										<p className="text-md mb-6">
-											Would you like to become our first sponsor?
-										</p>
-										<div className="flex justify-center">
-											<SponsorButton/>
-										</div>
-									</div>
-								)
-							}
-						</Await>
-					</Suspense>
+								))}
+							</div>
+							<SponsorButton/>
+						</div>
+					) : (
+						<div className="text-center py-8">
+							<p className="text-lg mb-4">
+								We currently don&apos;t have any sponsors.
+							</p>
+							<p className="text-md mb-6">
+								Would you like to become our first sponsor?
+							</p>
+							<div className="flex justify-center">
+								<SponsorButton/>
+							</div>
+						</div>
+					)}
 				</div>
 			</section>
 
@@ -261,33 +228,26 @@ export default function Home() {
 					<h2 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] py-3 text-navy">
 						Frequently Asked Questions
 					</h2>
-					<Suspense fallback={ <div>Loading Questions...</div> }>
-						<Await
-							resolve={ faqs }
-							errorElement={ <div>Error loading sponsors!</div> }
-						>
-							{ (resolvedFaqs: FAQItem[]) =>
-								resolvedFaqs.length ? (
-									<div>
-										<FAQ faqs={ resolvedFaqs }/>
-										<QuestionButton/>
-									</div>
-								) : (
-									<div className="text-center py-8">
-										<p className="text-lg mb-4">
-											We currently don&apos;t have any answers.
-										</p>
-										<p className="text-md mb-6">
-											Would you like to ask the first question?
-										</p>
-										<div className="flex justify-center">
-											<QuestionButton/>
-										</div>
-									</div>
-								)
-							}
-						</Await>
-					</Suspense>
+					{loading.faqs ? (
+						<div>Loading Questions...</div>
+					) : faqs.length ? (
+						<div>
+							<FAQ faqs={faqs}/>
+							<QuestionButton/>
+						</div>
+					) : (
+						<div className="text-center py-8">
+							<p className="text-lg mb-4">
+								We currently don&apos;t have any answers.
+							</p>
+							<p className="text-md mb-6">
+								Would you like to ask the first question?
+							</p>
+							<div className="flex justify-center">
+								<QuestionButton/>
+							</div>
+						</div>
+					)}
 				</div>
 			</section>
 		</div>
@@ -308,7 +268,7 @@ export function ErrorBoundary() {
 	return (
 		<div className="error-container">
 			<h1>Error</h1>
-			<p>Sorry, there was an error: { errorMessage }</p>
+			<p>Sorry, there was an error: {errorMessage}</p>
 		</div>
 	);
 }

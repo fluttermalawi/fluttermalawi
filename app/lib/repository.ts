@@ -10,17 +10,17 @@ import {
   Website,
 } from '~/types';
 import content from '~/lib/data/initiatives.json';
-import { AuthenticatedPocketBase } from '~/lib/utils/pocketbase.server';
+import { PocketBaseClient } from '~/lib/utils/pocketbase.client';
 
 // Initialize client
 // const pb =
-// 	await AuthenticatedPocketBase.getInstance().getClient();
+// 	PocketBaseClient.getInstance().getClient();
 
 // Get Sponsors
 export async function getSponsors(): Promise<Sponsor[]> {
   try {
     const pb =
-      await AuthenticatedPocketBase.getInstance().getClient();
+      PocketBaseClient.getInstance().getClient();
     const records = await pb
       .collection('sponsor')
       .getFullList<Sponsor>(100, {
@@ -38,7 +38,7 @@ export async function getSponsors(): Promise<Sponsor[]> {
 export async function getEvents(): Promise<EventDTO[]> {
   try {
     const pb =
-      await AuthenticatedPocketBase.getInstance().getClient();
+      PocketBaseClient.getInstance().getClient();
     // Fetch all events
     const records = await pb
       .collection('event')
@@ -118,7 +118,7 @@ export async function getEvents(): Promise<EventDTO[]> {
 export async function getUsers(ids: string[]): Promise<Organiser[]> {
   try {
     const pb =
-      await AuthenticatedPocketBase.getInstance().getClient();
+      PocketBaseClient.getInstance().getClient();
     // Handle empty array case
     if (!ids.length) {
       return [];
@@ -156,7 +156,7 @@ export async function getUsers(ids: string[]): Promise<Organiser[]> {
 export async function getProjects(): Promise<Project[]> {
   try {
     const pb =
-      await AuthenticatedPocketBase.getInstance().getClient();
+      PocketBaseClient.getInstance().getClient();
     const records = await pb
       .collection('project')
       .getFullList<Project>(200, {
@@ -174,7 +174,7 @@ export async function getProjects(): Promise<Project[]> {
 export async function getWebsite(): Promise<Website[]> {
   try {
     const pb =
-      await AuthenticatedPocketBase.getInstance().getClient();
+      PocketBaseClient.getInstance().getClient();
     const records = await pb
       .collection('website')
       .getFullList<Website>(200, {
@@ -201,7 +201,7 @@ export async function getInitiatives(): Promise<Initiative[]> {
 export async function getFaq(): Promise<FAQItem[]> {
   try {
     const pb =
-      await AuthenticatedPocketBase.getInstance().getClient();
+      PocketBaseClient.getInstance().getClient();
     const records = await pb
       .collection('faq')
       .getFullList<FAQItem>(100, {
@@ -219,7 +219,7 @@ export async function getFaq(): Promise<FAQItem[]> {
 export async function createProject(data: ProjectDTO): Promise<void> {
   try {
     const pb =
-      await AuthenticatedPocketBase.getInstance().getClient();
+      PocketBaseClient.getInstance().getClient();
     const records = await pb.collection('project').create(data);
 
     //TODO.log("your records: ", records);

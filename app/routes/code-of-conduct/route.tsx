@@ -1,26 +1,28 @@
-import {Await, useLoaderData, useRouteError, isRouteErrorResponse, data} from "react-router";
-import {Suspense} from "react";
-import type {LoaderFunction} from "react-router";
-import {getWebsite,} from "~/lib/repository";
+import {useRouteError, isRouteErrorResponse} from "react-router";
+import {useState, useEffect} from "react";
+import {getWebsite} from "~/lib/repository";
 import ReactMarkdown from "react-markdown";
 import type {Website} from "~/types";
 import td from "turndown";
 
-export const loader: LoaderFunction = async () => {
-    const websitePromise = getWebsite();
-
-
-    return data({
-        website: websitePromise,
-    });
-};
-
 export default function CodeOfConduct() {
-    const {website} = useLoaderData<typeof loader>();
+    const [website, setWebsite] = useState<Website[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const TurndownService = td;
     const turndownService = new TurndownService();
 
+    useEffect(() => {
+        getWebsite()
+            .then(data => {
+                setWebsite(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error loading website:', error);
+                setLoading(false);
+            });
+    }, []);
 
     return (
         <main className="min-h-screen flex justify-center items-center">
@@ -42,26 +44,22 @@ export default function CodeOfConduct() {
                         </div>
                     </div>
                     <div className="flex flex-col items-center">
-                        <Suspense fallback={<div>Loading content...</div>}>
-                            <Await resolve={website} errorElement={<div>loading...</div>}>
-                                {(resolvedWebsite: Website[]) => (
-                                    resolvedWebsite.length ? (
-                                        <div>
-                                            <ReactMarkdown
-                                                className="text-gray-500 dark:text-gray-400 mb-2 prose">
-                                                {turndownService.turndown(resolvedWebsite[0].codeOfConduct)}
-                                            </ReactMarkdown>
-                                        </div>
-                                    ) : (
-                                        <div className="text-center py-8">
-                                            <p className="text-lg mb-4">
-                                                We currently updating our code of conduct.
-                                            </p>
-                                        </div>
-                                    )
-                                )}
-                            </Await>
-                        </Suspense>
+                        {loading ? (
+                            <div>Loading content...</div>
+                        ) : website.length ? (
+                            <div>
+                                <ReactMarkdown
+                                    className="text-gray-500 dark:text-gray-400 mb-2 prose">
+                                    {turndownService.turndown(website[0].codeOfConduct)}
+                                </ReactMarkdown>
+                            </div>
+                        ) : (
+                            <div className="text-center py-8">
+                                <p className="text-lg mb-4">
+                                    We currently updating our code of conduct.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>

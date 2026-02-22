@@ -16,9 +16,10 @@ This is the Flutter Malawi community website built with React Router 7 and deplo
 
 ### GitHub Pages Setup
 - Repository: https://github.com/fluttermalawi/fluttermalawi
-- Base path: `/fluttermalawi`
+- Base path: `/` (root, no subdirectory)
 - Deployment: Automated via GitHub Actions on push to main branch
 - Build output: `dist/client` directory
+- Live URL: https://fluttermalawi.github.io/
 
 ### Package Manager
 This project uses **pnpm**. Always use pnpm commands:
@@ -91,8 +92,8 @@ pnpm build
 
 ### GitHub Pages Configuration
 1. Repository settings → Pages → Source: GitHub Actions
-2. Base path must match repository name: `/fluttermalawi`
-3. All internal links should be relative or use the base path
+2. Site will be available at: https://fluttermalawi.github.io/
+3. All internal links should be relative
 
 ### Environment Variables
 - Copy `.env.example` to `.env` for local development

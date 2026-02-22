@@ -1,6 +1,6 @@
 import {
   Link,
-} from "@remix-run/react";
+} from "react-router";
 
 const Footer = () => {
   return (
