@@ -12,7 +12,7 @@ import ProjectShowcaseSkeleton from "~/routes/projects/components/project_showca
 export default function Projects() {
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [loading, setLoading] = useState(true);
-	const baseUrl = import.meta.env.VITE_POCKETBASE_URL || process.env.POCKETBASE_URL;
+	const baseUrl = import.meta.env.VITE_POCKETBASE_URL || 'http://127.0.0.1:8090';
 
 	useEffect(() => {
 		getProjects()

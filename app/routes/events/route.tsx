@@ -9,7 +9,7 @@ import type {EventProps} from '~/types';
 export default function Event() {
 	const [events, setEvents] = useState<EventProps[]>([]);
 	const [loading, setLoading] = useState(true);
-	const baseUrl = import.meta.env.VITE_POCKETBASE_URL || process.env.POCKETBASE_URL;
+	const baseUrl = import.meta.env.VITE_POCKETBASE_URL || 'http://127.0.0.1:8090';
 
 	useEffect(() => {
 		getEvents()

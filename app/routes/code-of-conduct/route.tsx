@@ -47,9 +47,8 @@ export default function CodeOfConduct() {
                         {loading ? (
                             <div>Loading content...</div>
                         ) : website.length ? (
-                            <div>
-                                <ReactMarkdown
-                                    className="text-gray-500 dark:text-gray-400 mb-2 prose">
+                            <div className="prose prose-lg max-w-4xl">
+                                <ReactMarkdown>
                                     {turndownService.turndown(website[0].codeOfConduct)}
                                 </ReactMarkdown>
                             </div>
