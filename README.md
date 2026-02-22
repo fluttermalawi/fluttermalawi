@@ -2,7 +2,7 @@
 
 Our goal with this community is to create a friendly and engaging space for developers in Malawi who are interested in learning and developing using Flutter.
 
-🌐 **Live Site**: [https://fluttermalawi.github.io/fluttermalawi](https://fluttermalawi.github.io/fluttermalawi)
+🌐 **Live Site**: [https://fluttermalawi.github.io](https://fluttermalawi.github.io)
 
 ## Technology Stack
 
