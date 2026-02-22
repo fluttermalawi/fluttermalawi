@@ -1,12 +1,12 @@
-import {defer} from '@remix-run/node';
 import {
 	Await,
 	useLoaderData,
 	useRouteError,
 	isRouteErrorResponse,
-} from '@remix-run/react';
+	data,
+} from 'react-router';
 import {Suspense} from 'react';
-import type {LoaderFunction} from '@remix-run/node';
+import type {LoaderFunction} from 'react-router';
 import EnquireButton from '~/components/EnquireButton';
 import SponsorButton from '~/components/SponsorButton';
 import {

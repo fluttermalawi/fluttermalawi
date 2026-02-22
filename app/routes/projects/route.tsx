@@ -1,13 +1,13 @@
-import {defer} from '@remix-run/node';
 import {
 	Await,
 	useLoaderData,
 	useRouteError,
 	isRouteErrorResponse,
 	Link,
-} from '@remix-run/react';
+	data,
+} from 'react-router';
 import {Suspense} from 'react';
-import type {LoaderFunction} from '@remix-run/node';
+import type {LoaderFunction} from 'react-router';
 import {getProjects} from '~/lib/repository';
 import type {Project} from '~/types';
 import ProjectButton from '~/components/ProjectButton';
@@ -18,7 +18,7 @@ export const loader: LoaderFunction = async () => {
 	const baseUrl = process.env.POCKETBASE_URL;
 	const projectsPromise = getProjects();
 
-	return defer({
+	return data({
 		projects: projectsPromise,
 		baseUrl: baseUrl,
 	});

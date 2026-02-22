@@ -6,10 +6,10 @@ import {
 	Scripts,
 	ScrollRestoration,
 	useRouteError,
-} from '@remix-run/react';
+} from 'react-router';
 
 import './tailwind.css';
-import type {LinksFunction, MetaFunction} from '@remix-run/node';
+import type {LinksFunction, MetaFunction} from 'react-router';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import React from 'react';

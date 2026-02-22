@@ -4,6 +4,10 @@
 .pnp.js
 .yarn/install-state.gz
 
+# pnpm
+.pnpm-store
+.pnpm-debug.log
+
 # testing
 /coverage
 
@@ -14,6 +18,8 @@
 # production
 /.cache
 /build
+/dist
+.vite
 
 # misc
 .DS_Store

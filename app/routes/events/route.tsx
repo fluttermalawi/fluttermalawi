@@ -1,12 +1,12 @@
-import {defer} from '@remix-run/node';
 import {
 	Await,
 	useLoaderData,
 	useRouteError,
 	isRouteErrorResponse,
-} from '@remix-run/react';
+	data,
+} from 'react-router';
 import {Suspense} from 'react';
-import type {LoaderFunction} from '@remix-run/node';
+import type {LoaderFunction} from 'react-router';
 import {getEvents} from '~/lib/repository';
 
 import EventAnnouncementCard from './components/event_announcement';
@@ -24,7 +24,7 @@ export const loader: LoaderFunction = async () => {
 
 	// await delay(5000);
 
-	return defer({
+	return data({
 		events: eventPromise,
 		baseUrl: baseUrl,
 	});
