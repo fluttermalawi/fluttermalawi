@@ -18,7 +18,7 @@ This is the Flutter Malawi community website built with React Router 7 and deplo
 - Repository: https://github.com/fluttermalawi/fluttermalawi
 - Base path: `/` (root, no subdirectory)
 - Deployment: Automated via GitHub Actions on push to main branch
-- Build output: `dist/client` directory
+- Build output: `build/client` directory
 - Live URL: https://fluttermalawi.github.io/
 
 ### Package Manager

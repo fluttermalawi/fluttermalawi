@@ -18,7 +18,6 @@
 # production
 /.cache
 /build
-/dist
 .vite
 
 # misc
@@ -39,7 +38,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-pnpm-lock.yaml
 db/pb_data/*
 /.cache
 /build
