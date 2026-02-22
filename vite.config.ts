@@ -2,8 +2,8 @@ import { reactRouter } from '@react-router/dev/vite';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig({
-  base: '/fluttermalawi/',
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/fluttermalawi/' : '/',
   plugins: [
     reactRouter({
       ssr: false,
@@ -17,4 +17,4 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
   },
-});
+}));

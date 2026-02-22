@@ -26,7 +26,7 @@ export const loader: LoaderFunction = async () => {
 	const initiativesPromise = getInitiatives();
 	const faqPromise = getFaq();
 
-	return defer({
+	return data({
 		sponsors: sponsorsPromise,
 		initiatives: initiativesPromise,
 		faqs: faqPromise,

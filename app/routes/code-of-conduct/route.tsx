@@ -1,7 +1,6 @@
-import {defer} from "@remix-run/node";
-import {Await, useLoaderData, useRouteError, isRouteErrorResponse} from "@remix-run/react";
+import {Await, useLoaderData, useRouteError, isRouteErrorResponse, data} from "react-router";
 import {Suspense} from "react";
-import type {LoaderFunction} from "@remix-run/node";
+import type {LoaderFunction} from "react-router";
 import {getWebsite,} from "~/lib/repository";
 import ReactMarkdown from "react-markdown";
 import type {Website} from "~/types";
@@ -11,7 +10,7 @@ export const loader: LoaderFunction = async () => {
     const websitePromise = getWebsite();
 
 
-    return defer({
+    return data({
         website: websitePromise,
     });
 };

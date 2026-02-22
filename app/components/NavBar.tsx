@@ -5,7 +5,7 @@ import {
   DisclosurePanel,
 } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Link, useLocation } from '@remix-run/react';
+import { Link, useLocation } from 'react-router';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
