@@ -1,0 +1,46 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Promote Collaboration",
+      "img": "/assets/images/collaboration.svg",
+      "alt": "",
+      "description": "Encourage members to work together on projects, share knowledge, and support each other’s growth."
+    },
+    {
+      "id": 2,
+      "title": "Continuous Learning",
+      "img": "/assets/images/learning.svg",
+      "alt": "",
+      "description": "Offer regular workshops, talks, and seminars to help members stay up-to-date with the latest Flutter developments."
+    },
+    {
+      "id": 3,
+      "title": "Networking Opportunities",
+      "img": "/assets/images/networking.svg",
+      "alt": "",
+      "description": "Create events that allow members to connect with potential employers and build lasting networks."
+    },
+    {
+      "id": 4,
+      "title": "Diversity and Inclusion",
+      "img": "/assets/images/diversity.svg",
+      "alt": "",
+      "description": "Ensure that the community is welcoming to people of all skill levels, backgrounds, and economic status."
+    },
+    {
+      "id": 5,
+      "title": "Open Source Contribution",
+      "img": "/assets/images/open-source.svg",
+      "alt": "",
+      "description": "Motivate members to contribute to open source projects and give back to the wider Flutter ecosystem."
+    },
+    {
+      "id": 6,
+      "title": "Mentorship Programs",
+      "img": "/assets/images/mentor.svg",
+      "alt": "",
+      "description": "Pair experienced developers with newcomers to guide them through their Flutter journey."
+    }
+  ]
+}
