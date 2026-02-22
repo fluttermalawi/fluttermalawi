@@ -47,3 +47,4 @@ db/pb_data/*
 package-lock.json
 .idea/workspace.xml
 .idea/workspace.xml
+.react-router/
